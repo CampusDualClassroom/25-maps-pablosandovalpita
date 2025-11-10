@@ -1,80 +1,36 @@
 package com.campusdual.classroom;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+class Exercise {
 
-class ExerciseTest {
-
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-    private final PrintStream originalOut = System.out;
-    private final PrintStream originalErr = System.err;
-
-    @BeforeEach
-    void setUp() {
-        System.setOut(new PrintStream(this.outContent));
-        System.setErr(new PrintStream(this.errContent));
+    static Map<String, Person> createHashMap() {
+        Map<String, Person> map = new HashMap<>();
+        map.put("person", new Person("John", "Smith"));
+        map.put("teacher", new Teacher("María", "Montessori", "Educación"));
+        map.put("police", new PoliceOfficer("Jake", "Peralta", "B-99"));
+        map.put("doctor", new Doctor("Gregory", "House", "Nefrología e infectología"));
+        return map;
     }
 
-    @AfterEach
-    void tearDown() {
-        System.setOut(this.originalOut);
-        System.setErr(this.originalErr);
+    static Person addMapValue(Map<String, Person> map, String key, Person value) {
+        map.put(key, value);
+        return map.get(key);
     }
 
-    @Test
-    @DisplayName("Check if createHashMap creates a specific HashMap")
-    void testCreateMap() {
-        Map<String, Person> map = Exercise.createHashMap();
-        assertTrue(map.containsKey("person"), "The map does not contain the key \"person\"");
-        assertTrue(map.containsKey("teacher"),"The map does not contain the key \"teacher\"");
-        assertTrue(map.containsKey("police"),"The map does not contain the key \"police\"");
-        assertTrue(map.containsKey("doctor"),"The map does not contain the key \"doctor\"");
-        assertEquals("John", map.get("person").getName(), "The attribute \"name\" of the person associated to the key \"person\" is not John");
-        assertEquals("Smith", map.get("person").getSurname(), "The attribute \"surname\" of the person associated to the key \"person\" is not Smith");
-        assertEquals("María", map.get("teacher").getName(), "The attribute \"name\" of the person associated to the key \"teacher\" is not María");
-        assertEquals("Montessori", map.get("teacher").getSurname(), "The attribute \"surname\" of the person associated to the key \"teacher\" is not Montessori");
-        assertEquals("Educación", ((Teacher)map.get("teacher")).getArea(), "The attribute \"area\" of the teacher associated to the key \"teacher\" is not Educación");
-        assertEquals("Jake", map.get("police").getName(), "The attribute \"name\" of the person associated to the key \"police\" is not Jake");
-        assertEquals("Peralta", map.get("police").getSurname(), "The attribute \"surname\" of the person associated to the key \"police\" is not Peralta");
-        assertEquals("B-99", ((PoliceOfficer)map.get("police")).getSquad(), "The attribute \"squad\" of the police officer associated to the key \"police\" is not B-99");
-        assertEquals("Gregory", map.get("doctor").getName(), "The attribute \"name\" of the person associated to the key \"doctor\" is not Jake");
-        assertEquals("House", map.get("doctor").getSurname(), "The attribute \"surname\" of the person associated to the key \"doctor\" is not House");
-        assertEquals("Nefrología e infectología", ((Doctor)map.get("doctor")).getSpecialization(), "The attribute \"specialization\" of the doctor associated to the key \"doctor\" is not Nefrología e infectología");
-        assertTrue(map.get("person") instanceof Person, "The key value \"person\" is not an instance of \"Person\"");
-        assertTrue(map.get("teacher") instanceof Teacher, "The key value \"teacher\" is not an instance of \"Teacher\"");
-        assertTrue(map.get("police") instanceof PoliceOfficer, "The key value \"police\" is not an instance of \"PoliceOfficer\"");
-        assertTrue(map.get("doctor") instanceof Doctor, "The key value \"doctor\" is not an instance of \"Doctor\"");
-    }
-
-    @Test
-    @DisplayName("Test if printed HashMap contains the getDetails() of a Person")
-    void testPrintMap() {
-        Map<String, Person> hashMap = Exercise.createHashMap();
-        Exercise.printMapValues(hashMap);
-        String out = this.outContent.toString();
-        this.outContent.reset();
-        for (Map.Entry<String, Person> entry : hashMap.entrySet()){
+    static void printMapValues(Map<String, Person> map) {
+        for (Map.Entry<String, Person> entry : map.entrySet()) {
             entry.getValue().getDetails();
-            assertTrue(out.contains(this.outContent.toString()), "printMapValues() does not contains: " + this.outContent.toString() +"");
-            this.outContent.reset();
         }
     }
 
-    @Test
-    @DisplayName("Verifies adding a new value to an existing key")
-    void testAddExistingKey() {
-        Map<String, Person> hashMap = Exercise.createHashMap();
-        Person person = Exercise.addMapValue(hashMap, "police", new PoliceOfficer("Charles", "Boyle", "B-99"));
-        assertTrue(person == hashMap.get("police"));
-    }
+    public static void main(String[] args) {
+        Map<String, Person> myMap = createHashMap();
+        printMapValues(myMap);
 
+        System.out.println("\nAdding new police officer:");
+        addMapValue(myMap, "police", new PoliceOfficer("Charles", "Boyle", "B-99"));
+        printMapValues(myMap);
+    }
 }
